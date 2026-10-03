@@ -1,0 +1,388 @@
+/*
+  Ade's Design System Baseline
+  Structural reset inspired by Josh W. Comeau's modern reset:
+  https://www.joshwcomeau.com/css/custom-css-reset/
+*/
+
+/* 1. Use a more intuitive box model */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margins so rhythm is explicit */
+*:not(dialog) {
+  margin: 0;
+}
+
+/* 3. Enable keyword animations where supported */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+    scroll-behavior: smooth;
+  }
+}
+
+:root {
+  color-scheme: light;
+  --ade-primary: #43b3ae;
+  --ade-primary-focus: #2a7a76;
+  --ade-canvas: #ffffff;
+  --ade-parchment: #fafafa;
+  --ade-pearl: #fafafc;
+  --ade-ink: #3c3a3a;
+  --ade-muted: #555555;
+  --ade-muted-soft: #7a7a7a;
+  --ade-hairline: #e0e0e0;
+  --ade-divider: #f0f0f0;
+  --ade-shadow: 0 3px 30px rgba(0, 0, 0, 0.22);
+  --ade-radius: 4px;
+  --ade-content-width: 35rem;
+  --ade-wide-width: 72rem;
+  --ade-space-1: 0.25rem;
+  --ade-space-2: 0.5rem;
+  --ade-space-3: 0.75rem;
+  --ade-space-4: 1rem;
+  --ade-space-5: 1.5rem;
+  --ade-space-6: 2rem;
+  --ade-space-7: 3rem;
+  --ade-space-8: 5rem;
+  --ade-font-display: "Vollkorn", Georgia, serif;
+  --ade-font-body: "Vollkorn", Georgia, serif;
+  --ade-font-ui: "Montserrat", Arial, sans-serif;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--ade-canvas);
+  color: var(--ade-ink);
+  font-family: var(--ade-font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6, li, figcaption {
+  overflow-wrap: break-word;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+body > header,
+body > footer {
+  background: var(--ade-parchment);
+  border-color: var(--ade-hairline);
+}
+
+body > header {
+  border-bottom: 1px solid var(--ade-hairline);
+  padding: var(--ade-space-4) var(--ade-space-5);
+}
+
+body > footer {
+  border-top: 1px solid var(--ade-hairline);
+  margin-top: var(--ade-space-8);
+  padding: var(--ade-space-5);
+}
+
+main {
+  padding: var(--ade-space-6) var(--ade-space-5) var(--ade-space-8);
+}
+
+
+header > *,
+footer > * {
+  max-width: var(--ade-wide-width);
+  margin-inline: auto;
+}
+
+section > * + *,
+article > * + *,
+aside > * + * {
+  margin-top: var(--ade-space-5);
+}
+
+form > * + *,
+fieldset > * + * {
+  margin-top: var(--ade-space-4);
+}
+
+h1, h2, h3, h4 {
+  color: var(--ade-ink);
+  font-family: var(--ade-font-display);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: clamp(2.75rem, 5vw, 4.25rem);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+p, li, td, th {
+  color: var(--ade-muted);
+  font-size: 1.0625rem;
+  line-height: 1.45;
+}
+
+p + p {
+  margin-top: 1rem;
+}
+
+small {
+  font-size: 0.75rem;
+  color: var(--ade-muted-soft);
+}
+
+a {
+  color: var(--ade-primary);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--ade-primary);
+  text-decoration: underline;
+}
+
+/* Prose links: 1px gray underline at rest, turn red on hover.
+   Explicit ink color on both so list links match paragraph links
+   regardless of the inherited muted color on li elements. */
+p a,
+li a {
+  color: var(--ade-ink);
+  text-decoration: underline;
+  text-decoration-color: #c0c0c0;
+  text-decoration-thickness: 1px;
+}
+
+p a:hover,
+p a:focus-visible,
+li a:hover,
+li a:focus-visible {
+  color: var(--ade-primary);
+  text-decoration-color: var(--ade-primary);
+}
+
+strong {
+  color: var(--ade-ink);
+  font-weight: 600;
+}
+
+em {
+  font-style: italic;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--ade-divider);
+  margin-block: var(--ade-space-6);
+}
+
+ul, ol {
+  padding-left: 1.5rem;
+}
+
+li + li {
+  margin-top: 0.35rem;
+}
+
+blockquote {
+  border-left: 4px solid var(--ade-primary);
+  margin-block: var(--ade-space-6);
+  padding-left: var(--ade-space-4);
+}
+
+blockquote p {
+  color: var(--ade-muted);
+  font-style: italic;
+}
+
+figure {
+  margin-block: var(--ade-space-6);
+}
+
+figcaption {
+  margin-top: var(--ade-space-3);
+  color: var(--ade-muted-soft);
+  font-size: 0.95rem;
+}
+
+pre, code, samp, kbd {
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco, Consolas, monospace;
+}
+
+code, kbd {
+  background: var(--ade-parchment);
+  border: 1px solid var(--ade-hairline);
+  border-radius: var(--ade-radius);
+  padding: 0.15rem 0.35rem;
+  color: var(--ade-ink);
+  font-size: 0.92em;
+}
+
+pre {
+  background: var(--ade-parchment);
+  border: 1px solid var(--ade-hairline);
+  border-radius: var(--ade-radius);
+  overflow-x: auto;
+  padding: 1rem;
+}
+
+pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+th, td {
+  border-bottom: 1px solid var(--ade-divider);
+  padding: 0.75rem 0;
+  text-align: left;
+}
+
+th {
+  color: var(--ade-ink);
+  font-family: var(--ade-font-ui);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+button,
+input,
+select,
+textarea {
+  background: var(--ade-canvas);
+  border: 1px solid var(--ade-hairline);
+  border-radius: var(--ade-radius);
+  color: var(--ade-ink);
+}
+
+button,
+input:not([type="checkbox"]):not([type="radio"]),
+select {
+  min-height: 44px;
+}
+
+button {
+  background: var(--ade-primary);
+  border-color: var(--ade-primary);
+  color: #ffffff;
+  cursor: pointer;
+  font-family: var(--ade-font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 1rem;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+label {
+  color: var(--ade-ink);
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+fieldset {
+  border: 1px solid var(--ade-hairline);
+  border-radius: var(--ade-radius);
+  padding: 1rem;
+}
+
+legend {
+  color: var(--ade-ink);
+  font-family: var(--ade-font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0 0.35rem;
+  text-transform: uppercase;
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  appearance: none;
+  line-height: 1.2;
+  padding: 0.75rem 0.875rem;
+  width: 100%;
+}
+
+textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--ade-primary-focus);
+  outline-offset: 2px;
+}
+
+header p:first-child,
+footer p:first-child,
+.eyebrow {
+  color: var(--ade-muted-soft);
+  font-family: var(--ade-font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 40rem) {
+  main {
+    padding-inline: 1rem;
+  }
+
+  body > header,
+  body > footer {
+    padding-inline: 1rem;
+  }
+}

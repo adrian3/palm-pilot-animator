@@ -1,4 +1,4 @@
-# Palm Animation Player
+# Palm Pilot Animator
 
 A native, full-screen, black-and-white animation player for Palm OS, developed with the Palm m105 and m125. The device app is branded Ade’s App. The launcher displays “Ade’s App”; the list heading is “Made by Ade”. The launcher icon uses the approved 32-pixel ADE stamp.
 
@@ -12,12 +12,43 @@ The included demo GIF is 160 × 160 and contains only black and white. The packe
 
 The demo contains 19 frames at 100 ms each (1.9 seconds). The demo app occupies 63,902 bytes. Frames are accessed individually; inversion needs only one 3,216-byte scratch bitmap. The list supports up to 255 clips over multiple pages.
 
+## Local web interface
+
+A local browser interface lets you add GIFs, preview the actual Palm pixels, name animations, change framing/dithering/timing, estimate storage, and sync the collection. Files are processed on your own computer. No AI, cloud account, or WebUSB browser support is required.
+
+After installing the prerequisites and running `sh tools/setup-local.sh`:
+
+```sh
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install -r requirements.txt
+sh tools/run-web.sh
+```
+
+Open **http://localhost:8765**. The launcher automatically uses `.venv/bin/python3`; set `PALM_PYTHON` to use a different Python with Pillow. Leave the terminal running while using the interface.
+
+1. Load Golden Eagle or add your own GIFs (up to 20 MB each).
+2. Select an animation to preview or edit it. Automatic preserves opaque 160 × 160 black-and-white GIF pixels exactly. Other GIFs are center-cropped and dithered by default; Fit whole image adds white margins. Fixed frame rates change playback speed without dropping frames.
+3. Choose m105/PalmConnect or m125/native USB. Return the Palm to Applications and click **Sync to Palm**.
+4. Wait for the interface to ask you to press the physical HotSync button. The receiver saves a fresh backup, checks free memory, sends the app, and verifies every resource by reading it back.
+
+**Build & download** produces a PRC without contacting a device. Preview inversion affects only the browser; the Palm has its own Invert checkbox. The interface remembers your local collection between server restarts. Every sync replaces the full app; separate animation databases are not implemented yet.
+
+Uploaded originals, prepared frames, and builds are stored under `.local/web/`. Device backups are stored under `backups/web-*`. Both locations are excluded from Git. Removed or superseded animation files remain in local storage for recovery. Only the shipped Golden Eagle demo is tracked.
+
+The UI uses a conservative 6 MB library budget and a maximum of 1,800 frames. A device with less free memory can reject a smaller collection. Sync is serialized; cancellation is available while preparing or waiting, and is disabled after the Palm connects. Keep the server running and the Palm connected until verification completes.
+
+The server binds only to `127.0.0.1`; it checks Host headers and requires a per-run token on changes. It is a local utility, not a public upload server. Fonts may load from Google Fonts, with local serif/sans fallbacks if offline.
+
+See [web implementation and checks](docs/WEB.md).
+
 ## Local project layout
 
 - app/: native C player and menu
 - assets/source/: included Golden Eagle demo GIF; other user GIFs are excluded from Git
 - assets/generated/: native bitmap resources, timings, and library metadata
-- tools/: conversion, build, connection, installation, and validation tools
+- tools/: conversion, build, connection, installation, local web server, and validation tools
+- web/: browser interface styled with Ade’s Design System
 - build/: generated PRC application, excluded from Git
 - backups/: device backups and verified previous builds, excluded from Git
 - .local/: downloaded compiler, SDK, and HotSync library, excluded from Git

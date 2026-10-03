@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Palm Pilot Animator · Made by Ade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vollkorn:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/baseline.css"><link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<header><nav aria-label="Main navigation"><a class="brand" href="/">Made by Ade</a><span class="local">Runs on your computer</span><a href="#guide">How it works</a><a href="https://github.com/adrian3/palm-pilot-animator" target="_blank" rel="noopener">GitHub ↗</a></nav></header>
+<main>
+  <section class="intro"><p class="eyebrow">Palm Pilot Animator</p><h1>Bring your Palm to life.</h1><p class="lead">A little motion for a small screen. Add your GIFs, make them monochrome, and send them to your Palm.</p></section>
+  <div id="setup" class="notice" hidden><h2>A little setup first.</h2><p>Preview needs Pillow. Building and syncing also need the Palm tools listed in the <a href="https://github.com/adrian3/palm-pilot-animator#build-and-convert">setup guide</a>.</p><ul id="setup-list"></ul></div>
+  <p id="error" class="notice" role="alert" hidden></p>
+  <section class="studio" aria-label="Animation studio">
+    <div class="artwork">
+      <div class="screen-wrap"><canvas id="screen" width="160" height="160" aria-label="Palm pixel preview"></canvas><div id="empty-preview"><p>160 × 160 pixels.<br>Endless possibilities.</p></div></div>
+      <div class="playback"><button id="play" class="secondary icon-button" aria-label="Play preview" disabled><span id="play-icon">▶</span><span id="play-label">Play</span></button><span id="frame-position" class="caption">Palm screen preview</span><label class="check"><input type="checkbox" id="invert"> Invert preview</label></div>
+      <input id="scrub" type="range" min="0" max="0" value="0" aria-label="Preview frame" disabled>
+      <div id="editor" hidden>
+        <label for="name">Name on the Palm</label><div class="name-row"><input id="name" maxlength="24" autocomplete="off"><button id="rename" class="secondary">Save name</button></div>
+        <p id="pixel-note" class="caption"></p>
+        <div class="conversion">
+          <div><label for="fit">Framing</label><select id="fit"><option value="center">Center square</option><option value="fit">Fit whole image</option></select></div>
+          <div><label for="dither">Black & white</label><select id="dither"><option value="auto">Automatic</option><option value="ordered">Ordered dither</option><option value="floyd">Diffusion dither</option><option value="threshold">Solid pixels</option></select></div>
+          <div><label for="fps">Playback</label><select id="fps"><option value="source">Original timing</option><option value="10">10 fps</option><option value="15">15 fps</option><option value="20">20 fps</option></select></div>
+        </div>
+        <div class="edit-actions"><p class="caption">Changes apply when you update the preview. Fixed frame rates change playback speed.</p><button id="convert" class="secondary">Update preview</button></div>
+      </div>
+    </div>
+    <div class="collection">
+      <div class="section-heading"><h2>Your animations</h2><button id="add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add GIFs</button></div>
+      <input id="files" type="file" accept="image/gif,.gif" multiple hidden>
+      <div id="drop" tabindex="0" role="button" aria-label="Choose or drop GIF files"><p>Drop GIFs here</p><span class="caption">or choose files · up to 20 MB each</span></div>
+      <div id="library" aria-label="Animation collection"></div>
+      <div id="empty-library"><p>Start with your own animation,<br>or try Golden Eagle.</p><button id="demo" class="secondary">Load demo</button></div>
+      <div id="storage"><div class="storage-label"><span id="size">0 animations</span><span>6 MB library budget</span></div><meter id="capacity" min="0" max="6291456" value="0" aria-label="Estimated animation storage"></meter><p class="caption">The Palm’s free memory is checked again before installation.</p></div>
+      <div class="sync-section"><label for="device">Palm connection</label><select id="device"><option value="m105">m105 · PalmConnect USB adapter</option><option value="m125">m125 · Built-in USB</option></select><p class="caption">Connect the Palm and return to Applications.</p><div class="sync-actions"><button id="sync" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992V4.356M2.985 19.644v-4.992h4.992m-4.992 0a9 9 0 0 0 16.023 2.697m1.992-7.997A9 9 0 0 0 4.977 6.651"/></svg>Sync to Palm</button><button id="build" class="secondary" disabled>Build & download</button></div></div>
+      <div id="task" class="task" aria-live="polite" hidden><p id="task-title"></p><p id="task-detail" class="caption"></p><progress id="task-progress" aria-label="Task in progress"></progress><ol id="stages" hidden><li data-stage="building">Prepare</li><li data-stage="backup">Back up</li><li data-stage="installing">Send</li><li data-stage="verifying">Verify</li></ol><button id="cancel" class="secondary" hidden>Cancel</button><a id="download" href="/api/download" hidden>Download your Palm app ↓</a></div>
+    </div>
+  </section>
+  <section id="guide" class="guide"><h2>From GIF to Palm.</h2><div class="guide-grid"><article><span class="eyebrow">01 · Make it yours</span><h3>Add and preview.</h3><p>The preview shows the actual 160 × 160 pixels the Palm will display. Native black-and-white GIFs keep their existing pixels with Automatic selected.</p></article><article><span class="eyebrow">02 · Send it over</span><h3>Sync, then HotSync.</h3><p>Choose your connection and click Sync. Wait for the prompt to press the Palm’s physical HotSync button. Your GIFs stay on this computer.</p></article><article><span class="eyebrow">03 · Enjoy the motion</span><h3>Open Ade’s App.</h3><p>Pick an animation on the Palm. Tap the image to pause or play, use a scroll button to return to the list, and select Invert to swap black and white.</p></article></div><p class="caption">Each sync sends your full collection as a new app. A device backup is saved first; every installed resource is read back and checked. Invert preview affects only this screen—the Palm has its own Invert checkbox.</p></section>
+</main>
+<footer><div><p>Made by Ade</p><a href="https://github.com/adrian3/palm-pilot-animator">Palm Pilot Animator on GitHub ↗</a></div></footer>
+</body></html>
