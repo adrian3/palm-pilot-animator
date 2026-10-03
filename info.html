@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Palm Pilot Animator</title>
+<style>body{margin:0;background:#fafafa;color:#1d1d1f;font:18px/1.6 Georgia,serif}main{max-width:720px;margin:auto;padding:48px 24px}a{color:#2a7a76}img{width:128px;height:128px;image-rendering:pixelated}h1,h2{line-height:1.2}pre{padding:16px;background:#eee;overflow:auto;font-size:14px}nav{margin-bottom:40px}li{margin-bottom:8px}</style></head>
+<body><main><nav><a href="../index.html">← Ade’s Apps</a></nav><img src="images/icon.gif" alt="Palm Pilot Animator Golden Eagle animation"><h1>Palm Pilot Animator</h1>
+<p>A native, full-screen, black-and-white animation player for Palm OS, developed with the Palm m105 and m125. Runs on the Palm device.</p>
+<p>The included Golden Eagle demo is 160 × 160 pixels. Tap a title to play; tap the image to pause or resume. Use a physical scroll button to return to the list.</p>
+<h2>Build and add animations</h2><p>Open this project folder in Terminal. The setup requires Node.js 24, Python 3, libusb, and Rosetta 2 on Apple Silicon macOS.</p>
+<pre>sh tools/setup-local.sh
+sh tools/build-local.sh</pre><p>The result is <code>build/PalmAnimation.prc</code>. To replace the library, put 160 × 160 black-and-white GIFs in <code>assets/source/</code>, install the Python requirements, pack the library, and rebuild. Packing replaces the entire animation library.</p>
+<h2>Install on a Palm</h2><p>Follow the repository instructions to back up the device, connect via PalmConnect or native m125 USB, install, and verify the application. Updates require a saved PRC matching the installed version.</p>
+<p><a href="https://github.com/adrian3/palm-pilot-animator#readme">Full build and installation instructions</a> · <a href="https://github.com/adrian3/palm-pilot-animator/blob/main/docs/STATUS.md">Hardware and build status</a></p>
+</main></body></html>

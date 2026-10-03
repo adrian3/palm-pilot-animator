@@ -1,5 +1,7 @@
 # Palm Pilot Animator
 
+![Palm Pilot Animator — Golden Eagle animation](images/icon.gif)
+
 A native, full-screen, black-and-white animation player for Palm OS, developed with the Palm m105 and m125. The device app is branded Ade’s App. The launcher displays “Ade’s App”; the list heading is “Made by Ade”. The launcher icon uses the approved 32-pixel ADE stamp.
 
 The repository includes **Golden Eagle** as its only demo. When you add more animations, six titles fit on each page; tap Prev/Next or use the physical scroll buttons to change pages.
