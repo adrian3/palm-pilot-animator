@@ -1,0 +1,2 @@
+# Only needed to convert GIFs or compare packaged frames with GIF sources.
+Pillow==12.3.0

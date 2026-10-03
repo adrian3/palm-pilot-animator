@@ -1,0 +1,15 @@
+build/
+backups/
+.local/
+node_modules/
+__pycache__/
+.DS_Store
+assets/source/*
+!assets/source/.gitkeep
+!assets/source/Golden Eagle - 160px.gif
+
+.env
+.env.*
+*.log
+
+.venv/

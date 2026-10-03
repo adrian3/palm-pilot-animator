@@ -1,0 +1,34 @@
+{
+  "pixel_conversion": "exact black/white pixels; no scaling or dithering",
+  "animations": [
+    {
+      "name": "Golden Eagle",
+      "source": "Golden Eagle - 160px.gif",
+      "sha256": "d85fc81672586b0bdcab9925afdbee2243d64244d4c950770c53e2b16bfdd1a6",
+      "base": 1000,
+      "count": 19,
+      "timing_id": 1000,
+      "durations_ms": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ]
+    }
+  ]
+}
