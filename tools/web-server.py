@@ -118,7 +118,7 @@ class Studio:
         temp.write_text(json.dumps(self.clips, indent=2))
         temp.replace(self.data / 'library.json')
 
-    def setup(self):
+    def setup(self, transport=True):
         missing = []
         try:
             import PIL
@@ -128,16 +128,16 @@ class Studio:
             missing.append('Palm compiler: run sh tools/setup-local.sh.')
         if not (ROOT / '.local/sdk-3.5/include/PalmOS.h').exists():
             missing.append('Palm SDK: run sh tools/setup-local.sh.')
-        if not shutil.which('node') or not (ROOT / '.local/palm-sync/dist/protocols/sync-connections.js').exists():
+        if transport and (not shutil.which('node') or not (ROOT / '.local/palm-sync/dist/protocols/sync-connections.js').exists()):
             missing.append('HotSync tools: install Node.js and run sh tools/setup-local.sh.')
-        if not ctypes.util.find_library('usb-1.0') and not Path('/opt/homebrew/lib/libusb-1.0.dylib').exists():
+        if transport and not ctypes.util.find_library('usb-1.0') and not Path('/opt/homebrew/lib/libusb-1.0.dylib').exists():
             missing.append('libusb: install it before using the m105 connection.')
         return missing
 
     def state(self):
         with self.lock:
             estimate = 2570 + sum(c['frames']*3228 + len(c['name'])+1 for c in self.clips)
-            return {'clips': self.clips, 'job': self.job, 'estimatedBytes': estimate, 'limitBytes': MAX_BYTES, 'setup': self.setup(), 'token': TOKEN, 'download': bool(self.last_build and self.last_build.exists())}
+            return {'clips': self.clips, 'job': self.job, 'estimatedBytes': estimate, 'limitBytes': MAX_BYTES, 'setup': self.setup(), 'buildSetup': self.setup(transport=False), 'token': TOKEN, 'download': bool(self.last_build and self.last_build.exists())}
 
     def idle(self):
         if self.job and self.job['status'] == 'running':
@@ -235,7 +235,7 @@ class Studio:
         with self.lock:
             if not self.clips:
                 raise ValueError('Add at least one GIF first.')
-            missing = self.setup()
+            missing = self.setup(transport=False)
             if missing:
                 raise ValueError('Setup is incomplete. '+ ' '.join(missing))
             clips = list(self.clips)
@@ -273,6 +273,9 @@ class Studio:
         if device not in ('m105', 'm125'):
             raise ValueError('Choose a supported Palm connection.')
         def worker(job_id):
+            missing = self.setup()
+            if missing:
+                raise ValueError('Setup is incomplete. ' + ' '.join(missing))
             prc = self.build(job_id)
             out = ROOT/'backups'/f'web-{time.strftime("%Y%m%d-%H%M%S")}-{job_id[:8]}'
             out.mkdir(parents=True)

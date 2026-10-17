@@ -2,11 +2,42 @@
 
 ![Palm Pilot Animator — Golden Eagle animation](images/icon.gif)
 
-A native, full-screen, black-and-white animation player for Palm OS, developed with the Palm m105 and m125. The device app is branded Ade’s App. The launcher displays “Ade’s App”; the list heading is “Made by Ade”. The launcher icon uses the approved 32-pixel ADE stamp.
+A native, full-screen, black-and-white animation player for Palm OS, developed with the Palm m105 and m125.
 
 The repository includes **Golden Eagle** as its only demo. When you add more animations, six titles fit on each page; tap Prev/Next or use the physical scroll buttons to change pages.
 
 Tap a title for full-screen playback. Tap anywhere in the image to pause or resume. Either physical scroll button returns to the list; Home returns to Applications. The Invert checkbox swaps black and white during playback and remembers the setting between launches.
+
+![Palm Pilot Animator interface running on a Palm device](images/palm-screenshots.jpg)
+
+## Quick start · Apple Silicon Mac
+
+The setup scripts target **Apple Silicon macOS**. Direct connections are implemented for the **Palm m105 with PalmConnect USB adapter** and **Palm m125 with native USB**. Windows, Linux, Intel Macs, and other Palm models are not covered by this setup. Earlier builds were tested on these devices; the latest web-driven sync and external HotSync workflow still need end-to-end hardware verification.
+
+Install Python 3, Rosetta 2, and Apple's command-line tools (Git). For direct sync, also install Node.js 24 with npm and libusb. Setup downloads the pinned compiler and Palm SDK into this project.
+
+```sh
+git clone https://github.com/adrian3/palm-pilot-animator.git
+cd palm-pilot-animator
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install -r requirements.txt
+sh tools/setup-local.sh
+sh tools/run-web.sh
+```
+
+**Using HotSync for macOS or another PRC installer?** Replace `sh tools/setup-local.sh` above with `sh tools/setup-local.sh --export-only`. That mode skips Node.js, npm, and the direct-sync receiver; this project's libusb dependency is not needed for export.
+
+Open **http://localhost:8765**, click **Load demo**, or add your own GIFs. The web interface resizes and converts GIFs to the Palm's monochrome 160 × 160 display. Choose **Sync to Palm** for our direct connection, or **Build for HotSync / download** to install the exported PRC with [HotSync for macOS](#install-with-hotsync-for-macos).
+
+Each installation replaces the entire animation collection. GIFs cannot be added individually through HotSync; include every animation you want before rebuilding. Close the player on the Palm before installing. For export, manage backups with your usual tools; our automatic backup and resource read-back checks apply only to direct sync.
+
+### If something goes wrong
+
+- **Missing dependencies:** read the setup notice in the web interface. Export needs Pillow, the compiler, and the SDK; direct sync also needs the receiver and connection libraries.
+- **Palm does not connect:** return it to Applications, use the matching connection type, and press its physical HotSync button only when prompted. Stop other sync applications before direct sync.
+- **Not enough memory:** shorten or remove animations, then rebuild the full collection.
+- **Cannot open the web interface:** leave its Terminal window running and check for startup errors or another program using port 8765.
 
 ## Current library
 
@@ -34,7 +65,7 @@ Open **http://localhost:8765**. The launcher automatically uses `.venv/bin/pytho
 3. Choose m105/PalmConnect or m125/native USB. Return the Palm to Applications and click **Sync to Palm**.
 4. Wait for the interface to ask you to press the physical HotSync button. The receiver saves a fresh backup, checks free memory, sends the app, and verifies every resource by reading it back.
 
-**Build & download** produces a PRC without contacting a device. Preview inversion affects only the browser; the Palm has its own Invert checkbox. The interface remembers your local collection between server restarts. Every sync replaces the full app; separate animation databases are not implemented yet.
+**Build for HotSync / download** produces a PRC without contacting a device. Preview inversion affects only the browser; the Palm has its own Invert checkbox. The interface remembers your local collection between server restarts. Every sync replaces the full app; separate animation databases are not implemented yet.
 
 Uploaded originals, prepared frames, and builds are stored under `.local/web/`. Device backups are stored under `backups/web-*`. Both locations are excluded from Git. Removed or superseded animation files remain in local storage for recovery. Only the shipped Golden Eagle demo is tracked.
 
@@ -43,6 +74,21 @@ The UI uses a conservative 6 MB library budget and a maximum of 1,800 frames. A 
 The server binds only to `127.0.0.1`; it checks Host headers and requires a per-run token on changes. It is a local utility, not a public upload server. Fonts may load from Google Fonts, with local serif/sans fallbacks if offline.
 
 See [web implementation and checks](docs/WEB.md).
+
+## Install with HotSync for macOS
+
+The standard PRC produced by this project can be queued in [HotSync for macOS](https://github.com/User7142/hotsync-macos). No special Palm app build or plugin is needed.
+
+1. Prepare your animations in the local web interface and click **Build for HotSync / download**.
+2. Click **Download your Palm app** to save `Ades-App.prc`.
+3. Open HotSync for macOS, select the tab for the intended Palm, and drag the PRC into that tab.
+4. Return the Palm to Applications. Start listening in HotSync if needed, then press the Palm’s physical HotSync button.
+
+You can also queue `build/PalmAnimation.prc` after a command-line build. The PRC contains the player and the full animation collection; rebuilding and installing replaces that collection.
+
+Export requires Pillow and the Palm compiler/SDK, but does not require this project's Node.js HotSync receiver or libusb. HotSync for macOS handles device communication separately. Only one sync application should listen for the Palm at a time. Our direct-sync backup and resource read-back checks do not run when exporting a file; manage backups through your usual workflow.
+
+HotSync for macOS documents USB and serial connections, but compatibility with our m105 PalmConnect adapter has not been verified. The exported PRC workflow still needs an end-to-end hardware test with HotSync for macOS.
 
 ## Local project layout
 
@@ -63,9 +109,9 @@ No AI service, API key, or assistant is required. Conversion, compilation, backu
 
 Install these prerequisites yourself before running setup:
 
-- Node.js 24 with npm (tested with Node 24.16.0).
+- For direct sync: Node.js 24 with npm (tested with Node 24.16.0).
 - Python 3 (tested with Python 3.14.7).
-- libusb, discoverable as `usb-1.0`; the bridge also checks `/opt/homebrew/lib/libusb-1.0.dylib`.
+- For direct sync: libusb, discoverable as `usb-1.0`; the bridge also checks `/opt/homebrew/lib/libusb-1.0.dylib`.
 - Rosetta 2 for the historical x86_64 Palm compiler.
 - Git, curl, tar, and shasum, used by the dependency setup script.
 
@@ -100,6 +146,10 @@ The setup helper restores pinned compiler, SDK, and HotSync dependencies under `
 
 ## Connection and installation
 
+The cords I use to connect the Palm Pilot to my computer:
+
+![Cords used to connect the Palm Pilot to a computer](images/palm-pilot-cords.jpg)
+
 The PalmConnect USB adapter (0830:0080) does not expose a serial port on this Mac. The local bridge uses libusb and the KLSI adapter protocol to carry Palm SLP/PADP/CMP/DLP traffic. It validates SLP checksums and packet CRCs and recovers from incomplete startup traffic.
 
 ```sh
@@ -131,4 +181,4 @@ Press HotSync on the m125 after the receiver is ready. For an update, set PALM_R
 
 ## Verification and dependencies
 
-See [hardware and build status](docs/STATUS.md) for the distinction between checked build data and confirmed device behavior, plus dependency provenance. Compiler, SDK, USB dependencies, device backups, and build outputs are not bundled in the repository. Generated animation pixels and the launcher artwork are included. No project license has been selected yet; dependencies retain their upstream licenses.
+See [hardware and build status](docs/STATUS.md) for the distinction between checked build data and confirmed device behavior, plus dependency provenance. Compiler, SDK, USB dependencies, device backups, and build outputs are not bundled in the repository. Generated animation pixels and the launcher artwork are included. The project is available under the [MIT License](LICENSE). Dependencies retain their upstream licenses.

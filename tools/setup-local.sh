@@ -1,7 +1,20 @@
 #!/bin/sh
-# Restore locally contained dependencies on an Apple Silicon Mac with Node,
-# Python, Rosetta, and libusb installed. No system compiler/SDK changes.
+# Restore project-local build tools; optionally include the direct-sync receiver.
 set -eu
+mode=${1:-direct}
+case "$mode" in
+ direct|--export-only) ;;
+ *) echo 'Usage: sh tools/setup-local.sh [--export-only]' >&2; exit 2 ;;
+esac
+if [ "$#" -gt 1 ]; then
+ echo 'Usage: sh tools/setup-local.sh [--export-only]' >&2
+ exit 2
+fi
+if [ "$mode" = direct ]; then
+ for tool in node npm; do
+  command -v "$tool" >/dev/null 2>&1 || { echo "Missing $tool. Install Node.js 24, or use --export-only for external HotSync." >&2; exit 1; }
+ done
+fi
 project_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 local_dir="$project_dir/.local"
 mkdir -p "$local_dir"
@@ -16,6 +29,10 @@ if [ ! -d "$local_dir/sdk-3.5" ]; then
  git clone https://github.com/jichu4n/palm-os-sdk.git "$local_dir/sdk-source"
  git -C "$local_dir/sdk-source" checkout 1fa22066ca0f8b74949c14dd1d626294145d1c09
  cp -R "$local_dir/sdk-source/sdk-3.5" "$local_dir/sdk-3.5"
+fi
+if [ "$mode" = --export-only ]; then
+ echo 'Build tools ready. Direct-sync dependencies were skipped; install the PRC with your preferred HotSync tool.'
+ exit 0
 fi
 if [ ! -d "$local_dir/palm-sync" ]; then
  git clone https://github.com/jichu4n/palm-sync.git "$local_dir/palm-sync"

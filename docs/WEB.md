@@ -28,6 +28,7 @@ The interface follows Ade’s Design System: Vollkorn reading/display type, Mont
 
 ```sh
 python3 tools/test-web.py
+python3 tools/test-setup.py
 node tools/test-install.cjs
 python3 tools/test-transport.py
 python3 tools/test-conversion.py
@@ -38,3 +39,9 @@ python3 tools/test-library.py "$PWD"
 Automated web checks cover exact binary pixels and timings, centered cropping versus whole-image fit, partial GIF frames, invalid input rollback, local request tokens, Host validation, uploads, previews, deletion, and persistence. Installation checks cover replacement identity and backup requirements plus changed-resource detection. Existing transport and conversion tests remain applicable.
 
 The browser flow was exercised with Golden Eagle and a synthetic color GIF: upload, conversion, rename, timing change, preview, and PRC build. Golden Eagle produces the same 63,902-byte app size as the CLI build. The new web-driven device backup/install sequence still needs a physical Palm test; earlier receiver versions were verified on m105 and m125. First-time setup on a second Mac remains unverified.
+
+## External HotSync installation
+
+Build for HotSync / download exports the same standard PRC as a local build. The completed build shows instructions for queuing it in HotSync for macOS. Build readiness excludes the direct transport requirements (Node.js receiver and libusb); direct sync still checks all dependencies. No external application is launched and no device is contacted by export. Compatibility is based on the documented PRC install queue; hardware transfer via HotSync for macOS remains unverified.
+
+A clean export-only setup, Pillow installation, CLI build, and real web-studio build were checked on October 17, 2026; the PRC resources matched. See [current verification details](STATUS.md#clean-export-setup-checked--october-17-2026). This does not verify external HotSync or a physical device transfer.

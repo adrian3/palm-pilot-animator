@@ -100,11 +100,12 @@ function taskView() {
     li.classList.toggle('done',a>b);li.classList.toggle('active',a===b);
   }
   $('download').hidden=job.kind!=='build'||job.status!=='complete'||!state.download;
+  $('hotsync-help').hidden=$('download').hidden;
 }
 function controls() {
   const busy=state.job?.status==='running'||busyUploads;
   for(const id of ['add','demo','rename','convert','build','sync','device','fit','dither','fps','name']) {
-    $(id).disabled=busy || (['rename','convert'].includes(id)&&!selected) || (['build','sync'].includes(id)&&(!state.clips.length||state.setup.length>0));
+    $(id).disabled=busy || (['rename','convert'].includes(id)&&!selected) || (['build','sync'].includes(id)&&(!state.clips.length||(id==='build'?state.buildSetup:state.setup).length>0));
   }
   document.querySelectorAll('.remove').forEach(b=>b.disabled=busy);
   $('drop').setAttribute('aria-disabled',String(busy));

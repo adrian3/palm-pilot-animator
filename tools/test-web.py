@@ -6,6 +6,7 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest.mock import patch
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -68,6 +69,35 @@ class WebTests(unittest.TestCase):
             if studio.job['status']!='running':return
             time.sleep(.01)
         self.fail('Worker did not finish')
+    def test_export_without_transport_and_download(self):
+        studio=web.Studio(self.root/'state')
+        studio.upload('test.gif',self.gif().read_bytes(),{})
+        self.wait(studio)
+        def setup(transport=True):
+            return ['HotSync tools missing'] if transport else []
+        def command(args, env):
+            (Path(env['PALM_BUILD_DIR'])/'PalmAnimation.prc').write_bytes(b'PRC fixture')
+        with patch.object(studio,'setup',side_effect=setup) as check, patch.object(studio,'command',side_effect=command):
+            studio.build_job();self.wait(studio)
+            self.assertEqual(studio.job['status'],'complete')
+            check.assert_called_with(transport=False)
+            self.assertEqual(studio.last_build.read_bytes(),b'PRC fixture')
+            state=studio.state()
+            self.assertEqual(state['buildSetup'],[])
+            self.assertEqual(state['setup'],['HotSync tools missing'])
+            studio.sync('m125');self.wait(studio)
+            self.assertEqual(studio.job['status'],'error')
+            self.assertIn('HotSync tools missing',studio.job['message'])
+        server=web.ThreadingHTTPServer(('127.0.0.1',0),web.Handler)
+        server.studio=studio
+        thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+        try:
+            with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}/api/download') as response:
+                self.assertEqual(response.read(),b'PRC fixture')
+                self.assertIn('Ades-App.prc',response.headers['Content-Disposition'])
+        finally:
+            server.shutdown();server.server_close();thread.join()
+
     def test_http_token_host_upload_and_persistence(self):
         server=web.ThreadingHTTPServer(('127.0.0.1',0),web.Handler)
         server.studio=web.Studio(self.root/'state')
